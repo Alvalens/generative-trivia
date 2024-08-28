@@ -26,6 +26,9 @@ importers:
       firebase:
         specifier: ^10.13.0
         version: 10.13.0
+      firebase-admin:
+        specifier: ^11.11.1
+        version: 11.11.1
       lucide-react:
         specifier: ^0.436.0
         version: 0.436.0(react@18.3.1)
@@ -1811,10 +1814,6 @@ packages:
 
   mime-db@1.52.0:
     resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
-    engines: {node: '>= 0.6'}
-
-  mime-db@1.53.0:
-    resolution: {integrity: sha512-oHlN/w+3MQ3rba9rqFr6V/ypF10LSkdwUysQL7GkXoTgIWeV+tcXGA852TBxH+gsh8UWoyhR1hKcoMJTuWflpg==}
     engines: {node: '>= 0.6'}
 
   mime-types@2.1.35:
@@ -3674,7 +3673,7 @@ snapshots:
 
   compressible@2.0.18:
     dependencies:
-      mime-db: 1.53.0
+      mime-db: 1.52.0
     optional: true
 
   concat-map@0.0.1: {}
@@ -4908,9 +4907,6 @@ snapshots:
       picomatch: 2.3.1
 
   mime-db@1.52.0:
-    optional: true
-
-  mime-db@1.53.0:
     optional: true
 
   mime-types@2.1.35:

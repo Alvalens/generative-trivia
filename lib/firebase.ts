@@ -1,8 +1,7 @@
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore } from "firebase-admin/firestore";
+import { getApp, getApps, initializeApp } from "firebase/app";
 
-// Your Firebase configuration
+// Your Firebase configuration object
 const firebaseConfig = {
 	apiKey: process.env.FIREBASE_API_KEY,
 	authDomain: process.env.FIREBASE_AUTH_DOMAIN,
@@ -13,8 +12,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+const firestore = getFirestore(app);
 
-// Initialize Firebase services
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+export { firestore };
