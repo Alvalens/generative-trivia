@@ -84,7 +84,7 @@ export default function TriviaPage() {
     } else {
       router.push("/");
     }
-  }, [router, initializeUserAnswers]);
+  }, [router]);
 
 
 
