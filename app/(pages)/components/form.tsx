@@ -5,17 +5,19 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-hot-toast";
-import { useTransition, Fragment } from "react";
+import { useTransition, Fragment, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   educationLevel: z.string().min(1, "Please select an education level"),
   subject: z.string().min(1, "Please select a subject"),
   questionCount: z
-  .string()
+    .string()
     .min(1, "Must be at least 1 question")
     .max(10, "Maximum 10 questions allowed"),
   language: z.string().min(1, "Please select a language"),
@@ -23,6 +25,9 @@ const formSchema = z.object({
 
 export default function TriviaForm() {
   const [isPending, startTransition] = useTransition();
+  const [isLoading, setLoading] = useState(false);
+  const [triviaID, setTriviaID] = useState<number | null>(null);
+  const [triviaDetails, setTriviaDetails] = useState<any>(null);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -32,12 +37,54 @@ export default function TriviaForm() {
       language: "",
     },
   });
+  const router = useRouter();
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    startTransition(() => {
-      toast.success("Trivia generated successfully!");
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    startTransition(async () => {
+      try {
+        setLoading(true);
+
+        // Make a POST request to the API
+        const response = await fetch("/api/trivia", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(values)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Add random ID to trivia so it won't replace the previous trivia
+          const trivias = JSON.parse(localStorage.getItem("triviaQuestions") || "[]");
+          const newTriviaID = Math.random();
+          setTriviaID(newTriviaID);
+          localStorage.setItem("triviaQuestions", JSON.stringify([...trivias, { id: newTriviaID, trivia: data.triviaQuestions }]));
+
+          setTriviaDetails(data.triviaQuestions);
+
+          toast.success("Trivia generated successfully!");
+        } else {
+          toast.error(data.message || "Failed to generate trivia.");
+        }
+      } catch (error) {
+        console.error("Error generating trivia:", error);
+        toast.error("An unexpected error occurred. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+
       console.log("Form Values:", values);
     });
+  };
+
+  const handleStartTrivia = () => {
+    if (triviaID !== null) {
+      router.push(`/${triviaID}/trivia`);
+    } else {
+      toast.error("No trivia ID found. Please try generating trivia again.");
+    }
   };
 
   return (
@@ -144,11 +191,25 @@ export default function TriviaForm() {
 
             {/* Submit Button */}
             <Button type="submit" className="w-full" disabled={isPending}>
-              {isPending ? "Generating..." : "Generate Trivia"}
+              {isPending ? "Generating Trivia..." : "Generate Trivia"}
             </Button>
           </form>
         </Form>
       </div>
+
+      {triviaID !== null && (
+        <Dialog open={triviaID !== null}>
+          <DialogContent>
+            <DialogTitle>Trivia Generated Successfully</DialogTitle>
+            <DialogDescription>
+              You have successfully generated trivia questions. Click the button below to start the trivia challenge.
+            </DialogDescription>
+            <Button className="mt-4" onClick={handleStartTrivia}>
+              Start Trivia
+            </Button>
+          </DialogContent>
+        </Dialog>
+      )}
     </Fragment>
   );
 }

@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.17.1",
     "@hookform/resolvers": "^3.9.0",
     "@next-auth/firebase-adapter": "^2.0.1",
+    "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-select": "^2.1.1",
     "@radix-ui/react-slot": "^1.1.0",
