@@ -27,19 +27,35 @@ export default function TriviaPage() {
   const [correctAnswersCount, setCorrectAnswersCount] = useState<number>(0); // Track correct answers count
 
   useEffect(() => {
-    const triviaID = window.location.pathname.split("/")[1];
+    const triviaID = Number(window.location.pathname.split("/")[1]);
     const storedTrivia = localStorage.getItem("triviaQuestions");
+
     if (storedTrivia) {
       const triviaList = JSON.parse(storedTrivia);
-      const triviaItem = triviaList.find((item: TriviaQuestion) => item.id === Number(triviaID));
+      const triviaItem = triviaList.find((item: TriviaQuestion) => item.id === triviaID);
+
       if (triviaItem) {
-        triviaItem.trivia = JSON.parse(triviaItem.trivia);
+        // Check if triviaItem.trivia is already an object
+        if (typeof triviaItem.trivia === 'string') {
+          triviaItem.trivia = JSON.parse(triviaItem.trivia);
+        }
+
+        if (triviaItem.score !== undefined && triviaItem.score >= triviaItem.trivia.length) {
+          // Redirect to results page if trivia is completed
+          router.push(`/${triviaID}/trivia/result`);
+          return;
+        }
+
         setTrivia(triviaItem);
         setUserAnswers(triviaItem.userAnswers || new Array(triviaItem.trivia[0].answer.length).fill(''));
         setCorrectAnswersCount(triviaItem.score || 0); // Load previous score if available
+      } else {
+        router.push("/"); // Redirect to home if no trivia found
       }
+    } else {
+      router.push("/"); // Redirect to home if no trivia data in localStorage
     }
-  }, []);
+  }, [router]);
 
   const handleAnswerChange = (index: number, value: string) => {
     if (value.length <= 1) {
@@ -125,33 +141,39 @@ export default function TriviaPage() {
 
   return (
     <div className="p-4 h-screen flex flex-col justify-center items-center">
-      <h2 className="text-xl font-bold mb-4">{currentQuestion?.question}</h2>
-      <div className="flex space-x-2 mb-4">
-        {displayValues?.map((char, index) => (
-          <Input
-            key={index}
-            type="text"
-            maxLength={1}
-            placeholder="" // Empty placeholder
-            onChange={(e) => handleAnswerChange(index, e.target.value)}
-            value={userAnswers[index]}
-            className="w-12 text-center"
-          />
-        ))}
-      </div>
-      <div className="mt-4">
-        {isAnswerChecked ? (
-          <Button onClick={handleNextQuestion}>Next Question</Button>
-        ) : (
-          <Button onClick={checkAnswer}>Check Answer</Button>
-        )}
-        {hintCount > 0 && !isAnswerChecked && (
-          <Button onClick={revealLetter} className="ml-2">
-            Reveal Letter ({hintCount} left)
-          </Button>
-        )}
-      </div>
-      {feedback && <p className="mt-2">{feedback}</p>}
+      {trivia && currentQuestionIndex < trivia.trivia.length ? (
+        <>
+          <h2 className="text-xl font-bold mb-4">{currentQuestion?.question}</h2>
+          <div className="flex space-x-2 gap-1 mb-4 flex-wrap">
+            {displayValues?.map((char, index) => (
+              <Input
+                key={index}
+                type="text"
+                maxLength={1}
+                placeholder="_"
+                onChange={(e) => handleAnswerChange(index, e.target.value)}
+                value={userAnswers[index]}
+                className="w-12 text-center"
+              />
+            ))}
+          </div>
+          <div className="mt-4">
+            {isAnswerChecked ? (
+              <Button onClick={handleNextQuestion}>Next Question</Button>
+            ) : (
+              <Button onClick={checkAnswer}>Check Answer</Button>
+            )}
+            {hintCount > 0 && !isAnswerChecked && (
+              <Button onClick={revealLetter} className="ml-2">
+                Reveal Letter ({hintCount} left)
+              </Button>
+            )}
+          </div>
+          {feedback && <p className="mt-2">{feedback}</p>}
+        </>
+      ) : (
+        <p>Trivia ended!</p>
+      )}
     </div>
   );
 }
