@@ -56,8 +56,9 @@ export default function TriviaPage() {
       const lettersToShow = initialAnswer.length > 5 ? 2 : 1;
       setUserAnswers(revealLettersInRandomPositions(initialAnswer, lettersToShow));
     }
-  }, [currentQuestionIndex, setUserAnswers]);
-  
+  }, [currentQuestionIndex]);
+
+
   useEffect(() => {
     const triviaID = Number(window.location.pathname.split("/")[1]);
     const storedTrivia = localStorage.getItem("triviaQuestions");
@@ -70,12 +71,27 @@ export default function TriviaPage() {
         if (typeof triviaItem.trivia === 'string') {
           triviaItem.trivia = JSON.parse(triviaItem.trivia);
         }
-
         if (triviaItem.score !== undefined) {
           router.push(`/${triviaID}/trivia/result`);
           return;
         }
+      }
+    }
+  }, [router]);
 
+
+  useEffect(() => {
+    const triviaID = Number(window.location.pathname.split("/")[1]);
+    const storedTrivia = localStorage.getItem("triviaQuestions");
+
+    if (storedTrivia) {
+      const triviaList = JSON.parse(storedTrivia);
+      const triviaItem = triviaList.find((item: TriviaQuestion) => item.id === triviaID);
+
+      if (triviaItem) {
+        if (typeof triviaItem.trivia === 'string') {
+          triviaItem.trivia = JSON.parse(triviaItem.trivia);
+        }
         setTrivia(triviaItem);
         initializeUserAnswers(triviaItem);
       } else {
@@ -84,14 +100,13 @@ export default function TriviaPage() {
     } else {
       router.push("/");
     }
-  }, [router]);
-
+  }, [router, initializeUserAnswers]);
 
 
   const handleAnswerChange = (index: number, value: string) => {
     if (value.length <= 1) {
       const updatedAnswers = [...userAnswers];
-      updatedAnswers[index] = value.toUpperCase(); // Ensure uppercase for consistency
+      updatedAnswers[index] = value.toUpperCase();
       setUserAnswers(updatedAnswers);
     }
   };

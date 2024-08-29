@@ -61,7 +61,7 @@ export default function ResultPage() {
     return (
         <div className="p-4 h-screen flex flex-col justify-center items-center">
             <h2 className="text-xl font-bold mb-4">Your Score</h2>
-            <p className="text-2xl font-semibold">{score !== null ? `Score: ${score}` : "Loading..."}</p>
+            <p className="text-2xl font-semibold">{score !== null ? `Score: ${score * (quizCount != null ? quizCount : 0)}` : "Loading..."}</p>
             <Button onClick={handleBackToHome} className="mt-4">
                 Back to Home
             </Button>
