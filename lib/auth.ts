@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { FirestoreAdapter } from "@next-auth/firebase-adapter";
-import { firestore } from "@/lib/firebase"; 
+import { firestore } from "@/lib/firebase"; // Ensure this correctly initializes Firestore
 
 export const authOptions = {
 	providers: [
@@ -10,7 +10,22 @@ export const authOptions = {
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
 		}),
 	],
-	adapter: FirestoreAdapter(firestore), 
+	adapter: FirestoreAdapter(firestore),
+	session: {
+		strategy: "jwt",
+	},
+	callbacks: {
+		async session({ session, token }: { session: any, token: any }) {
+			session.user.id = token.sub;
+			return session;
+		},
+		async jwt({ token, user }: { token: any, user: any }) {
+			if (user) {
+				token.sub = user.id;
+			}
+			return token;
+		},
+	},
 };
 
-export default NextAuth(authOptions);
+export default NextAuth(authOptions as any);

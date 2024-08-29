@@ -22,7 +22,7 @@ const educationLevels: { [key: string]: { [key: number]: string } } = {
 export const POST = async (request: Request) => {
 	try {
 		// Ensure the user is logged in
-		const session = await getServerSession(authOptions);
+		const session = await getServerSession(authOptions as any);
 		if (!session) {
 			return NextResponse.json(
 				{
