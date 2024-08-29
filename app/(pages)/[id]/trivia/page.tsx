@@ -35,25 +35,23 @@ export default function TriviaPage() {
       const triviaItem = triviaList.find((item: TriviaQuestion) => item.id === triviaID);
 
       if (triviaItem) {
-        // Check if triviaItem.trivia is already an object
         if (typeof triviaItem.trivia === 'string') {
           triviaItem.trivia = JSON.parse(triviaItem.trivia);
         }
 
-        if (triviaItem.score !== undefined && triviaItem.score >= triviaItem.trivia.length) {
-          // Redirect to results page if trivia is completed
+        if (triviaItem.score !== undefined) {
           router.push(`/${triviaID}/trivia/result`);
           return;
         }
 
         setTrivia(triviaItem);
         setUserAnswers(triviaItem.userAnswers || new Array(triviaItem.trivia[0].answer.length).fill(''));
-        setCorrectAnswersCount(triviaItem.score || 0); // Load previous score if available
+        setCorrectAnswersCount(triviaItem.score || 0); 
       } else {
-        router.push("/"); // Redirect to home if no trivia found
+        router.push("/"); 
       }
     } else {
-      router.push("/"); // Redirect to home if no trivia data in localStorage
+      router.push("/"); 
     }
   }, [router]);
 
@@ -121,7 +119,7 @@ export default function TriviaPage() {
         if (unrevealedIndices.length > 0) {
           const randomIndex = unrevealedIndices[Math.floor(Math.random() * unrevealedIndices.length)];
           const updatedAnswers = [...userAnswers];
-          updatedAnswers[randomIndex] = answer[randomIndex].toUpperCase(); // Ensure uppercase for consistency
+          updatedAnswers[randomIndex] = answer[randomIndex].toUpperCase(); 
           // Update state and hint count
           setUserAnswers(updatedAnswers);
           setHintCount(hintCount - 1);
