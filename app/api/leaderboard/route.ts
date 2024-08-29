@@ -35,8 +35,6 @@ export const GET = async () => {
 			doc.data()
 		);
 
-        console.log("Leaderboard data:", leaderboardData);
-
 		return NextResponse.json({
 			success: true,
 			user,

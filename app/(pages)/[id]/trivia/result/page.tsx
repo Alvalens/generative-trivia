@@ -16,11 +16,11 @@ const updateLeaderboard = async (score: number, quizCount: number) => {
         });
 
         const data = await response.json();
-        if (data.success) {
-            console.log("Leaderboard updated successfully.");
-        } else {
-            console.error("Failed to update leaderboard:", data.message);
-        }
+        // if (data.success) {
+        //     console.log("Leaderboard updated successfully.");
+        // } else {
+        //     console.error("Failed to update leaderboard:", data.message);
+        // }
     } catch (error) {
         console.error("Error updating leaderboard:", error);
     }

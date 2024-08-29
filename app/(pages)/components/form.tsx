@@ -62,7 +62,7 @@ export default function TriviaForm() {
           if (trivias.length >= 5) {
             trivias.shift();
           }
-          
+
           const newTriviaID = Math.random();
           setTriviaID(newTriviaID);
           localStorage.setItem("triviaQuestions", JSON.stringify([...trivias, { id: newTriviaID, trivia: data.triviaQuestions }]));
@@ -79,8 +79,6 @@ export default function TriviaForm() {
       } finally {
         setLoading(false);
       }
-
-      console.log("Form Values:", values);
     });
   };
 
