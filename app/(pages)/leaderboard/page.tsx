@@ -2,8 +2,7 @@
 import { useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
 import { Card, CardContent } from "@/components/ui/card";
-
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Award, Medal, Star } from "lucide-react"; // Import Lucide icons
 
 interface LeaderboardEntry {
@@ -16,12 +15,14 @@ interface LeaderboardEntry {
 const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [user, setUser] = useState<LeaderboardEntry | null>(null);
+  const [loading, setLoading] = useState<boolean>(true); // Add loading state
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
       const session = await getSession();
 
       if (!session) {
+        setLoading(false);
         return;
       }
 
@@ -36,10 +37,20 @@ const Leaderboard = () => {
       } else {
         console.error(data.message);
       }
+
+      setLoading(false); // Set loading to false after data is fetched
     };
 
     fetchLeaderboard();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto p-4 min-h-screen flex flex-col justify-center items-center text-gray-900 dark:text-gray-100">
+        <p className="text-xl font-semibold">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4 min-h-screen flex flex-col justify-center text-gray-900 dark:text-gray-100">
@@ -71,7 +82,7 @@ const Leaderboard = () => {
         <div className="mb-8 p-4 bg-gray-100 rounded shadow-lg mt-8 dark:bg-gray-700">
           <h2 className="text-xl font-semibold">Your Stat</h2>
           <div className="flex items-center space-x-4 mt-2">
-            <Avatar  className="w-12 h-12 rounded-full">
+            <Avatar className="w-12 h-12 rounded-full">
               <AvatarImage src={user.avatar} alt={`${user.name}'s avatar`} />
               <AvatarFallback>{user.name[0]}</AvatarFallback>
             </Avatar>
