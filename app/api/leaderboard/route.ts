@@ -16,7 +16,7 @@ export const GET = async () => {
 		);
 	}
 
-	const userId = session.user.id;
+	const userId = (session as any).user.id;
 
 	try {
 		// Retrieve the current user's leaderboard data
@@ -66,8 +66,8 @@ export const POST = async (request: Request) => {
 		);
 	}
 
-	const userId = session.user.id;
-	const { name, image } = session.user;
+	const userId = (session as any).user.id;
+	const { name, image } = (session as any).user;
 	const { score, quizCount } = await request.json();
 
 	if (score === undefined || quizCount === undefined) {

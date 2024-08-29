@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 interface TriviaQuestion {
@@ -50,6 +50,14 @@ export default function TriviaPage() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [correctAnswersCount, setCorrectAnswersCount] = useState<number>(0);
 
+  const initializeUserAnswers = useCallback((triviaItem: TriviaQuestion) => {
+    if (triviaItem && triviaItem.trivia[currentQuestionIndex]) {
+      const initialAnswer = triviaItem.trivia[currentQuestionIndex].answer;
+      const lettersToShow = initialAnswer.length > 5 ? 2 : 1;
+      setUserAnswers(revealLettersInRandomPositions(initialAnswer, lettersToShow));
+    }
+  }, [currentQuestionIndex, setUserAnswers]);
+  
   useEffect(() => {
     const triviaID = Number(window.location.pathname.split("/")[1]);
     const storedTrivia = localStorage.getItem("triviaQuestions");
@@ -76,15 +84,9 @@ export default function TriviaPage() {
     } else {
       router.push("/");
     }
-  }, [router]);
+  }, [router, initializeUserAnswers]);
 
-  const initializeUserAnswers = (triviaItem: TriviaQuestion) => {
-    if (triviaItem && triviaItem.trivia[currentQuestionIndex]) {
-      const initialAnswer = triviaItem.trivia[currentQuestionIndex].answer;
-      const lettersToShow = initialAnswer.length > 5 ? 2 : 1;
-      setUserAnswers(revealLettersInRandomPositions(initialAnswer, lettersToShow));
-    }
-  };
+
 
   const handleAnswerChange = (index: number, value: string) => {
     if (value.length <= 1) {
