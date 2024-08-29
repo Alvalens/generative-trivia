@@ -58,6 +58,11 @@ export default function TriviaForm() {
         if (response.ok) {
           // Add random ID to trivia so it won't replace the previous trivia
           const trivias = JSON.parse(localStorage.getItem("triviaQuestions") || "[]");
+
+          if (trivias.length >= 5) {
+            trivias.shift();
+          }
+          
           const newTriviaID = Math.random();
           setTriviaID(newTriviaID);
           localStorage.setItem("triviaQuestions", JSON.stringify([...trivias, { id: newTriviaID, trivia: data.triviaQuestions }]));
