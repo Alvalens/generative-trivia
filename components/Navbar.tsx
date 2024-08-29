@@ -92,7 +92,9 @@ const Navbar = () => {
               <Button
               variant={"outline"}
                 onClick={() => {
-                  signIn('google');
+                  () => {
+                    window.location.href = `/api/auth/signin?callbackUrl=${encodeURIComponent(window.location.href)}`;
+                  }
                   setIsOpen(false); // Close the menu after sign in
                 }}
               >
