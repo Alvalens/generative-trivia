@@ -1,5 +1,7 @@
 export { default } from "next-auth/middleware";
 
 export const config = {
-	matcher: ["/protected"],
+	matcher: [
+		"/((?!^$).*)", // Protect all routes except "/"
+	],
 };
