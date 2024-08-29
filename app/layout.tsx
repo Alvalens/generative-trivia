@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { cn } from "@/lib/utils"
 import NextAuthProvider from "@/components/providers/NextAuthProvider";
+import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 
@@ -29,7 +30,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         )}
       >
         <NextAuthProvider session={session}>
-          {children}</NextAuthProvider>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
+        </NextAuthProvider>
       </body>
     </html>
   )
