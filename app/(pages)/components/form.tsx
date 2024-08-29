@@ -104,7 +104,7 @@ export default function TriviaForm() {
                     <FormControl>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select Education Level" />
+                          <SelectValue placeholder="Select Education" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="1">Primary</SelectItem>
@@ -133,7 +133,11 @@ export default function TriviaForm() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="math">Mathematics</SelectItem>
-                          <SelectItem value="science">Science</SelectItem>
+                          <SelectItem value="physics">Physics</SelectItem>
+                          <SelectItem value="biology">Biology</SelectItem>
+                          <SelectItem value="chemistry">Chemistry</SelectItem>
+                          <SelectItem value="geography">Geography</SelectItem>
+                          <SelectItem value="computer">Computer Science</SelectItem>
                           <SelectItem value="history">History</SelectItem>
                           <SelectItem value="literature">Literature</SelectItem>
                         </SelectContent>

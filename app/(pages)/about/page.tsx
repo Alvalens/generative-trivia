@@ -16,7 +16,7 @@ export default function page() {
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                    Next Generative Trivia
+                    Next Generative Trivia v0.1
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
                     This Project is a Next.js application that generates trivia questions based on your education level
@@ -52,7 +52,7 @@ export default function page() {
                     </div>
                   </div>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                  Hello my name is Alvalen, I am a Fullstack Developer who loves to create web applications. I am passionate about learning new technologies and building projects that can help people.
+                    Hello my name is Alvalen, I am a Fullstack Developer who loves to create web applications. I am passionate about learning new technologies and building projects that can help people.
                   </p>
                 </div>
               </div>
@@ -62,10 +62,10 @@ export default function page() {
                   <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Find Me Online</h2>
                   <div className="flex items-center gap-4">
                     <Link href="https://alvalens.my.id" target="_blank" prefetch={false}>
-                     <Globe size={24} />
+                      <Globe size={24} />
                     </Link>
                     <Link href="https://github.com/Alvalens" target="_blank" prefetch={false}>
-                     <Github size={24} />
+                      <Github size={24} />
                     </Link>
                     <Link href="https://www.linkedin.com/in/alvalens/" target="_blank" prefetch={false}>
                       <Linkedin size={24} />
