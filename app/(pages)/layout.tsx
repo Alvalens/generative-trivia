@@ -5,7 +5,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-1 container">
+      <main className="flex-1">
         {children}
         <Toaster position="top-center" reverseOrder={false} />
       </main>
