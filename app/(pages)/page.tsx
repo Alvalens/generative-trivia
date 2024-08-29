@@ -11,7 +11,7 @@ export default function Home() {
 
   return (
     <Fragment>
-      <div className="flex flex-col items-center justify-center h-screen">
+      <div className="flex flex-col items-center justify-center h-screen container">
         <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
           <div className="space-y-4">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
