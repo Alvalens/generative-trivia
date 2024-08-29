@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Alvalens Porto 2
 
-## Getting Started
+![visitor badge](https://visitor-badge.laobi.icu/badge?page_id=generative-trivia.visitor-badge)
 
-First, run the development server:
+A generative trivia website built with Next.js, Firebase, NextAuth, Google OAuth, and TypeScript. Users can generate trivia questions for predefined school subjects and answer them with a unique interactive input style. The application supports user authentication with Google and stores data in Firestore.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white) ![Firebase](https://img.shields.io/badge/firebase-a08021?style=for-the-badge&logo=firebase&logoColor=ffcd34)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **User Authentication**: Sign in with Google using NextAuth.
+- **Firestore Integration**: Store and retrieve trivia questions and user data.
+- **Dynamic Trivia Generation**: Generate trivia questions on predefined subjects.
+- **Interactive Answer Input**: Multiple input fields per word with a unique OTP-style interface.
+- **Protected Routes**: Ensure only authenticated users can access certain parts of the app.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Installation
 
-## Learn More
+1. **Clone the repository**:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   git clone https://github.com/Alvalens/generative-trivia.git
+   cd generative-trivia
+   ```
+2. **Install dependencies**:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```bash
+   pnpm install
+   ```
+3. **Set up Firebase**:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+   - Go to the Firebase console, create a project, and enable Firestore.
+   - Set up Google authentication in Firebase Authentication.
+4. **Set up Google OAuth**:
 
-## Deploy on Vercel
+   - Create OAuth credentials in the Google Cloud Console.
+   - Obtain `CLIENT_ID` and `CLIENT_SECRET`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. **Set up Gemini API**:
+   Create Gemini API credentials in the Google AI Studio.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Contributing
+
+Contributions are welcome! If you find any issues or have suggestions, feel free to open an issue or submit a pull request.
+
+
+## License
+
+This project is licensed under the GPL-3.0 License see the [LICENSE](LICENSE) file for details.
+
+## Key Points to Customize:
+- Replace `yourusername` with your GitHub username if applicable.
+- Add any additional setup or usage instructions specific to your project.
+- Update or fill any blank envirotment variable
+
+This `README.md` should give anyone a clear understanding of how to set up, use, and contribute to your project.
