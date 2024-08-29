@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from './ui/button';
 import Link from 'next/link';
 import { menuLinks } from '@/lib/menu';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { Menu, X } from 'lucide-react';
 import ThemeToggle from './Toggler';
 
@@ -42,8 +42,10 @@ const Navbar = () => {
           <ThemeToggle />
             {!session ? (
               <Button
-              variant={"outline"}
-                onClick={() => signIn('google')}
+                variant={"outline"}
+                onClick={() => {
+                  window.location.href = `/api/auth/signin?callbackUrl=${encodeURIComponent(window.location.href)}`;
+                }}
               >
                 Sign In
               </Button>
