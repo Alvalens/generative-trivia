@@ -8,14 +8,16 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
   const { data: session } = useSession();
-  console.log(session);
   return (
     <Fragment>
       <div className="flex flex-col items-center justify-center h-screen container">
         <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
           <div className="space-y-4 flex flex-col justify-center">
-            {/* call the user name */}
-            <h4 className="text-muted-foreground">Welcome, {session?.user?.name} 👋 </h4>
+            {session ? (
+              <h4 className="text-muted-foreground">Welcome, {session.user?.name} 👋</h4>
+            ) : (
+              <h4 className="text-muted-foreground">Welcome, Guest 👋</h4>
+            )}
             <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
               Unleash Your Knowledge with Generative Trivia
             </h1>
