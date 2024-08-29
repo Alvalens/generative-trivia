@@ -4,82 +4,151 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
-import { Fragment } from "react";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-hot-toast";
+import { useTransition, Fragment } from "react";
+
+const formSchema = z.object({
+  educationLevel: z.string().min(1, "Please select an education level"),
+  subject: z.string().min(1, "Please select a subject"),
+  questionCount: z
+  .string()
+    .min(1, "Must be at least 1 question")
+    .max(10, "Maximum 10 questions allowed"),
+  language: z.string().min(1, "Please select a language"),
+});
 
 export default function TriviaForm() {
+  const [isPending, startTransition] = useTransition();
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      educationLevel: "",
+      subject: "",
+      questionCount: "",
+      language: "",
+    },
+  });
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    startTransition(() => {
+      toast.success("Trivia generated successfully!");
+      console.log("Form Values:", values);
+    });
+  };
+
   return (
     <Fragment>
-      <h3 className="text-2xl font-bold">
-        Generate Trivia Now!
-      </h3>
-    <div className="flex flex-col items-center justify-center w-full">
-      <form className="w-full">
-        <div className="grid md:grid-cols-3 ">
-          {/* Education Level Dropdown */}
-            <div className="md:pe-3">
-            <Select required>
-              <SelectTrigger>
-                <SelectValue placeholder="Select Education Level" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">Primary</SelectItem>
-                <SelectItem value="2">Secondary</SelectItem>
-                <SelectItem value="3">High School</SelectItem>
-                <SelectItem value="4">College</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+      <h3 className="text-2xl font-bold">Generate Trivia Now!</h3>
+      <div className="flex flex-col items-center justify-center w-full">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit as any)} className="w-full space-y-6">
+            <div className="grid md:grid-cols-3 gap-4">
+              {/* Education Level Dropdown */}
+              <FormField
+                control={form.control}
+                name="educationLevel"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Education Level</FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Education Level" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">Primary</SelectItem>
+                          <SelectItem value="2">Secondary</SelectItem>
+                          <SelectItem value="3">High School</SelectItem>
+                          <SelectItem value="4">College</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          {/* Subject Dropdown */}
-            <div className="mt-4 md:mt-0 md:pe-3">
-            <Select required> 
-              <SelectTrigger>
-                <SelectValue placeholder="Select Subject" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="math">Mathematics</SelectItem>
-                <SelectItem value="science">Science</SelectItem>
-                <SelectItem value="history">History</SelectItem>
-                <SelectItem value="literature">Literature</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        {/* question count */}
-        <div className="mt-4 md:mt-0">
-          <Input
-                required
-            type="number"
-            name="questionCount"
-            id="questionCount"
-            placeholder="Number of Questions"
-            className="input"
-            min="1"
-            max="10"
-          />
-        </div>
-        </div>
+              {/* Subject Dropdown */}
+              <FormField
+                control={form.control}
+                name="subject"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Subject</FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Subject" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="math">Mathematics</SelectItem>
+                          <SelectItem value="science">Science</SelectItem>
+                          <SelectItem value="history">History</SelectItem>
+                          <SelectItem value="literature">Literature</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-        {/* Language Dropdown */}
-        <div className="mt-4">
-            <Select required>
-            <SelectTrigger>
-              <SelectValue placeholder="Select Language" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="english">English</SelectItem>
-              <SelectItem value="indonesian">Indonesian</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+              {/* Question Count Input */}
+              <FormField
+                control={form.control}
+                name="questionCount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Number of Questions</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="Number of Questions"
+                        min="1"
+                        max="10"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-        {/* Submit Button */}
-        <div className="mt-6">
-          <Button type="submit" className="w-full">
-            Generate Trivia
-          </Button>
-        </div>
-      </form>
-    </div>
+            {/* Language Dropdown */}
+            <FormField
+              control={form.control}
+              name="language"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Language</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Language" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="english">English</SelectItem>
+                        <SelectItem value="indonesian">Indonesian</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Submit Button */}
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? "Generating..." : "Generate Trivia"}
+            </Button>
+          </form>
+        </Form>
+      </div>
     </Fragment>
   );
 }
