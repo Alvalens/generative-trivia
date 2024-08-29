@@ -13,7 +13,7 @@ export default function Home() {
     <Fragment>
       <div className="flex flex-col items-center justify-center h-screen container">
         <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
-          <div className="space-y-4">
+          <div className="space-y-4 flex flex-col justify-center">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
               Unleash Your Knowledge with Generative Trivia
             </h1>

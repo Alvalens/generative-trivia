@@ -5,7 +5,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils"
 import NextAuthProvider from "@/components/providers/NextAuthProvider";
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
-import { authOptions } from "./api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 
 const fontSans = FontSans({
