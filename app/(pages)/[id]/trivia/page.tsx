@@ -16,15 +16,39 @@ interface TriviaQuestion {
   score?: number; // Added score to track user score
 }
 
+const revealLettersInRandomPositions = (answer: string, lettersToShow: number) => {
+  const initialAnswer = answer.toUpperCase();
+  const indices = Array.from({ length: initialAnswer.length }, (_, i) => i);
+
+  // Shuffle the indices
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+
+  // Take the first 'lettersToShow' indices
+  const indicesToReveal = indices.slice(0, lettersToShow);
+
+  // Initialize userAnswers with empty values
+  const userAnswersArray = new Array(initialAnswer.length).fill('');
+
+  // Set the revealed letters in the random positions
+  indicesToReveal.forEach(index => {
+    userAnswersArray[index] = initialAnswer[index];
+  });
+
+  return userAnswersArray;
+};
+
 export default function TriviaPage() {
   const router = useRouter();
   const [trivia, setTrivia] = useState<TriviaQuestion | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
-  const [hintCount, setHintCount] = useState<number>(3);
+  const [hintCount, setHintCount] = useState<number>(5);
   const [isAnswerChecked, setIsAnswerChecked] = useState<boolean>(false);
   const [feedback, setFeedback] = useState<string | null>(null);
-  const [correctAnswersCount, setCorrectAnswersCount] = useState<number>(0); // Track correct answers count
+  const [correctAnswersCount, setCorrectAnswersCount] = useState<number>(0);
 
   useEffect(() => {
     const triviaID = Number(window.location.pathname.split("/")[1]);
@@ -45,15 +69,22 @@ export default function TriviaPage() {
         }
 
         setTrivia(triviaItem);
-        setUserAnswers(triviaItem.userAnswers || new Array(triviaItem.trivia[0].answer.length).fill(''));
-        setCorrectAnswersCount(triviaItem.score || 0); 
+        initializeUserAnswers(triviaItem);
       } else {
-        router.push("/"); 
+        router.push("/");
       }
     } else {
-      router.push("/"); 
+      router.push("/");
     }
   }, [router]);
+
+  const initializeUserAnswers = (triviaItem: TriviaQuestion) => {
+    if (triviaItem && triviaItem.trivia[currentQuestionIndex]) {
+      const initialAnswer = triviaItem.trivia[currentQuestionIndex].answer;
+      const lettersToShow = initialAnswer.length > 5 ? 2 : 1;
+      setUserAnswers(revealLettersInRandomPositions(initialAnswer, lettersToShow));
+    }
+  };
 
   const handleAnswerChange = (index: number, value: string) => {
     if (value.length <= 1) {
@@ -69,8 +100,7 @@ export default function TriviaPage() {
       const userAnswer = userAnswers.join("");
       if (userAnswer.toUpperCase() === correctAnswer.toUpperCase()) {
         setFeedback("Correct!");
-        setCorrectAnswersCount(prev => prev + 1); // Increment correct answers count
-        // Store user answers in trivia object
+        setCorrectAnswersCount(prev => prev + 1);
         const updatedTrivia = { ...trivia, userAnswers, score: correctAnswersCount + 1 };
         const storedTrivia = localStorage.getItem("triviaQuestions");
         if (storedTrivia) {
@@ -92,7 +122,7 @@ export default function TriviaPage() {
     setCurrentQuestionIndex((prevIndex) => {
       const nextIndex = prevIndex + 1;
       if (trivia && trivia.trivia[nextIndex]) {
-        setUserAnswers(new Array(trivia.trivia[nextIndex].answer.length).fill(''));
+        initializeUserAnswers(trivia);
       } else if (trivia) {
         // Redirect to results page if all questions are answered
         const updatedTrivia = { ...trivia, score: correctAnswersCount };
@@ -119,8 +149,7 @@ export default function TriviaPage() {
         if (unrevealedIndices.length > 0) {
           const randomIndex = unrevealedIndices[Math.floor(Math.random() * unrevealedIndices.length)];
           const updatedAnswers = [...userAnswers];
-          updatedAnswers[randomIndex] = answer[randomIndex].toUpperCase(); 
-          // Update state and hint count
+          updatedAnswers[randomIndex] = answer[randomIndex].toUpperCase();
           setUserAnswers(updatedAnswers);
           setHintCount(hintCount - 1);
         }
@@ -130,7 +159,7 @@ export default function TriviaPage() {
 
   const currentQuestion = trivia?.trivia[currentQuestionIndex];
   const displayValues = currentQuestion?.answer.split("").map((char, index) =>
-    userAnswers[index] || "" // Use empty string instead of underscore
+    userAnswers[index] || ""
   );
 
   if (!trivia || trivia.trivia.length === 0) {
