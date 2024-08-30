@@ -44,11 +44,8 @@ export const POST = async (request: Request) => {
 		// Construct the prompt dynamically based on input
 		const educationLevelText = educationLevels[language][educationLevel];
         
-		const prompt = `Generate ${questionCount} trivia questions about ${subject} for a student at the ${educationLevelText} level.
-        ${language === "indonesian" ? "Ensure the questions adhere to the Indonesian curriculum." : "" }
-        Format the output as an array with no additional styling, e.g., [{question: 'example question', answer: 'example answer'}].
-        Ensure each question is short-answer, with a maximum of 2 words the answer and should not multiple answer it should be single answer.
-        Ensure each trivia question is unique. Tailor the trivia to suit the student's curriculum in ${language}.`.trim();
+		const prompt =
+			`Generate ${questionCount} unique trivia questions about ${subject} for a student at the ${educationLevelText} level with vary level of diffuculty. Each question should be a short-answer type with a maximum of 2 words for the answer and should have a single correct answer. Ensure that all questions are distinct from one another within this session and aim to avoid duplication from previous sessions. ${language === "indonesian"? "Ensure the questions adhere to the Indonesian curriculum.": ""}. Format the output as an array with no additional styling, e.g., [{question: 'example question', answer: 'example answer'}].To further ensure uniqueness, introduce a randomization element in the selection of questions and vary the types of questions to make sure they are tailored to the student's curriculum in ${language}.`.trim();
 
 		const response = await model.generateContent(prompt);
 
