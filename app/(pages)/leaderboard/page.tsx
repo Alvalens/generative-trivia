@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Award, Medal, Star } from "lucide-react"; // Import Lucide icons
+import { Award, Medal, Star } from "lucide-react";
+import useSWR from "swr";
 
 interface LeaderboardEntry {
   name: string;
@@ -12,39 +13,32 @@ interface LeaderboardEntry {
   quizCount: number;
 }
 
+const fetcher = async (url: string) => {
+  const session = await getSession();
+
+  if (!session) {
+    throw new Error("Not authenticated");
+  }
+
+  const res = await fetch(url, {
+    method: "GET",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  return res.json();
+};
+
 const Leaderboard = () => {
-  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
-  const [user, setUser] = useState<LeaderboardEntry | null>(null);
-  const [loading, setLoading] = useState<boolean>(true); // Add loading state
+  const { data, error, isLoading } = useSWR("/api/leaderboard", fetcher, {
+    revalidateOnFocus: false, 
+    revalidateOnReconnect: true,
+    refreshInterval: 30000,
+  });
 
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      const session = await getSession();
-
-      if (!session) {
-        setLoading(false);
-        return;
-      }
-
-      const res = await fetch("/api/leaderboard", {
-        method: "GET",
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        setUser(data.user);
-        setLeaderboard(data.leaderboard);
-      } else {
-        console.error(data.message);
-      }
-
-      setLoading(false); // Set loading to false after data is fetched
-    };
-
-    fetchLeaderboard();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="container mx-auto p-4 min-h-screen flex flex-col justify-center items-center text-gray-900 dark:text-gray-100">
         <p className="text-xl font-semibold">Loading...</p>
@@ -52,11 +46,21 @@ const Leaderboard = () => {
     );
   }
 
+  if (error || !data?.success) {
+    return (
+      <div className="container mx-auto p-4 min-h-screen flex flex-col justify-center items-center text-gray-900 dark:text-gray-100">
+        <p className="text-xl font-semibold">Failed to load leaderboard</p>
+      </div>
+    );
+  }
+
+  const { leaderboard, user } = data;
+
   return (
     <div className="container mx-auto p-4 min-h-screen flex flex-col justify-center text-gray-900 dark:text-gray-100 mt-20">
       <h1 className="text-3xl font-bold mb-4 text-center">Leaderboard</h1>
       <div className="grid grid-cols-1 gap-4">
-        {leaderboard.map((entry, index) => (
+        {leaderboard.map((entry: LeaderboardEntry, index: number) => (
           <Card key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded shadow-lg dark:bg-gray-800">
             <div className="flex items-center space-x-4">
               <Avatar className="w-10 h-10 rounded-full">
