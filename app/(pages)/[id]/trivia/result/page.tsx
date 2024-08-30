@@ -61,7 +61,9 @@ export default function ResultPage() {
     return (
         <div className="p-4 h-screen flex flex-col justify-center items-center">
             <h2 className="text-xl font-bold mb-4">Your Score</h2>
-            <p className="text-2xl font-semibold">{score !== null ? `Score: ${score * (quizCount != null ? quizCount : 0)}` : "Loading..."}</p>
+            <p className="text-2xl font-semibold mb-4">{score !== null ? `${score * (quizCount != null ? quizCount : 0)}` : "Loading..."}</p>
+            <small className="text-sm text-gray-500">You got {score} out of {quizCount} questions right.</small>
+            <small className="text-sm text-gray-500"> {score} x {quizCount}</small>
             <Button onClick={handleBackToHome} className="mt-4">
                 Back to Home
             </Button>
