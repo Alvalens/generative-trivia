@@ -66,9 +66,13 @@ export const POST = async (request: Request) => {
 
 	const userId = (session as any).user.id;
 	const { name, image } = (session as any).user;
-	const { score, quizCount } = await request.json();
+	const { score, quizCount, triviaID } = await request.json();
 
-	if (score === undefined || quizCount === undefined) {
+	if (
+		score === undefined ||
+		quizCount === undefined ||
+		triviaID === undefined
+	) {
 		return NextResponse.json(
 			{ success: false, message: "Missing parameters." },
 			{ status: 400 }
@@ -79,6 +83,21 @@ export const POST = async (request: Request) => {
 		const userDocRef = db.collection("leaderboard").doc(userId);
 		const userDoc = await userDocRef.get();
 
+		// Check if the user has already submitted this triviaID
+		if (userDoc.exists) {
+			const userData = userDoc.data();
+			if (userData?.submittedTriviaIDs?.includes(triviaID)) {
+				return NextResponse.json(
+					{
+						success: false,
+						message:
+							"Score for this trivia session has already been submitted.",
+					},
+					{ status: 400 }
+				);
+			}
+		}
+
 		const scoreIncrement = score * quizCount;
 
 		if (userDoc.exists) {
@@ -88,6 +107,7 @@ export const POST = async (request: Request) => {
 				quizCount: FieldValue.increment(quizCount),
 				name,
 				avatar: image,
+				submittedTriviaIDs: FieldValue.arrayUnion(triviaID),
 			});
 		} else {
 			// Create new user entry in leaderboard
@@ -96,6 +116,7 @@ export const POST = async (request: Request) => {
 				quizCount,
 				name,
 				avatar: image,
+				submittedTriviaIDs: [triviaID],
 			});
 		}
 
