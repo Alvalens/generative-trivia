@@ -14,7 +14,7 @@ const Navbar = () => {
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
-    <nav className="bg-white bg-opacity-30 shadow-md dark:bg-gray-800 dark:bg-opacity-30 fixed w-full backdrop-blur-md border ">
+    <nav className="bg-white bg-opacity-30 shadow-md dark:bg-gray-800 dark:bg-opacity-30 fixed w-full backdrop-blur-md border z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo Section */}
@@ -61,6 +61,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="flex items-center md:hidden">
+            <ThemeToggle />
             <button
               onClick={toggleMenu}
               className="text-gray-700 hover:text-gray-900 focus:outline-none dark:text-gray-200 dark:hover:text-gray-100"

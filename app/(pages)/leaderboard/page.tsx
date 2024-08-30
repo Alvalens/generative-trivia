@@ -53,7 +53,7 @@ const Leaderboard = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 min-h-screen flex flex-col justify-center text-gray-900 dark:text-gray-100">
+    <div className="container mx-auto p-4 min-h-screen flex flex-col justify-center text-gray-900 dark:text-gray-100 mt-20">
       <h1 className="text-3xl font-bold mb-4 text-center">Leaderboard</h1>
       <div className="grid grid-cols-1 gap-4">
         {leaderboard.map((entry, index) => (
@@ -65,7 +65,7 @@ const Leaderboard = () => {
               </Avatar>
               <div>
                 <h3 className="text-lg font-semibold">{entry.name}</h3>
-                <p className="text-sm text-gray-400">Score: {entry.score} | Quiz Completed {entry.quizCount}</p>
+                <p className="text-sm text-gray-400">Score: {entry.score} | Quiz Completed: {entry.quizCount}</p>
               </div>
             </div>
             <div className="text-center">
@@ -89,7 +89,7 @@ const Leaderboard = () => {
             <div>
               <h3 className="text-lg">{user.name}</h3>
               <p className="text-sm text-gray-400">
-                Score: {user.score} | Quiz Completed {user.quizCount}
+                Score: {user.score} | Quiz Completed: {user.quizCount}
               </p>
             </div>
           </div>
