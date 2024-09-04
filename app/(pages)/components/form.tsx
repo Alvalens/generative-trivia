@@ -84,7 +84,7 @@ export default function TriviaForm() {
 
   const handleStartTrivia = () => {
     if (triviaID !== null) {
-      router.push(`/${triviaID}/trivia`);
+      router.push(`/trivia/${triviaID}`);
     } else {
       toast.error("No trivia ID found. Please try generating trivia again.");
     }

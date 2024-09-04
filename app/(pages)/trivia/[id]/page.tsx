@@ -40,7 +40,7 @@ const revealLettersInRandomPositions = (answer: string, lettersToShow: number) =
   return userAnswersArray;
 };
 
-export default function TriviaPage() {
+export default function TriviaPage({params}: {params: {id: string}}) {
   const router = useRouter();
   const [trivia, setTrivia] = useState<TriviaQuestion | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
@@ -60,9 +60,8 @@ export default function TriviaPage() {
 
 
   useEffect(() => {
-    const triviaID = Number(window.location.pathname.split("/")[1]);
+    const triviaID = Number(params.id);
     const storedTrivia = localStorage.getItem("triviaQuestions");
-
     if (storedTrivia) {
       const triviaList = JSON.parse(storedTrivia);
       const triviaItem = triviaList.find((item: TriviaQuestion) => item.id === triviaID);
@@ -72,16 +71,16 @@ export default function TriviaPage() {
           triviaItem.trivia = JSON.parse(triviaItem.trivia);
         }
         if (triviaItem.score !== undefined) {
-          router.push(`/${triviaID}/trivia/result`);
+          router.push(`/trivia/${triviaID}/result`);
           return;
         }
       }
     }
-  }, [router]);
+  }, [router, params.id]);
 
 
   useEffect(() => {
-    const triviaID = Number(window.location.pathname.split("/")[1]);
+    const triviaID = Number(params.id);
     const storedTrivia = localStorage.getItem("triviaQuestions");
 
     if (storedTrivia) {
@@ -100,7 +99,7 @@ export default function TriviaPage() {
     } else {
       router.push("/");
     }
-  }, [router, initializeUserAnswers]);
+  }, [router, initializeUserAnswers, params.id]);
 
 
   const handleAnswerChange = (index: number, value: string) => {
@@ -150,7 +149,7 @@ export default function TriviaPage() {
           );
           localStorage.setItem("triviaQuestions", JSON.stringify(triviaList));
         }
-        router.push(`/${trivia.id}/trivia/result`);
+        router.push(`/trivia/${trivia.id}/result`);
       }
       return nextIndex;
     });

@@ -20,7 +20,7 @@ const updateLeaderboard = async (score: number, quizCount: number, triviaID: num
     }
 };
 
-export default function ResultPage() {
+export default function ResultPage({ params }: { params: { id: string } }) {
     const router = useRouter();
     const [score, setScore] = useState<number | null>(null);
     const [triviaID, setTriviaID] = useState<number | null>(null);
@@ -28,8 +28,7 @@ export default function ResultPage() {
     const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 
     useEffect(() => {
-        const pathSegments = window.location.pathname.split("/");
-        const id = Number(pathSegments[1]);
+        const id = Number(params.id);
         setTriviaID(id);
 
         const storedTrivia = localStorage.getItem("triviaQuestions");
@@ -48,7 +47,7 @@ export default function ResultPage() {
                 setHasSubmitted(true);
             }
         }
-    }, []);
+    }, [params.id]);
 
     useEffect(() => {
         if (triviaID && !hasSubmitted) {
