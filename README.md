@@ -1,4 +1,4 @@
-# Alvalens Porto 2
+# Generative Trivia
 
 ![visitor badge](https://visitor-badge.laobi.icu/badge?page_id=generative-trivia.visitor-badge)
 
