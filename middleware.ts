@@ -4,6 +4,6 @@ export const config = {
 	matcher: [
 		"/about",
 		"/leaderboard",
-		"/[id]/trivia",
+		"/trivia/:path*",
 	],
 };
