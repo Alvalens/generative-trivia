@@ -32,22 +32,63 @@ export const POST = async (request: Request) => {
 				{ status: 401 }
 			);
 		}
-
+		
 		// Extract parameters from the request body
-		const { educationLevel, subject, questionCount, language } =
-			await request.json();
-
-		// Initialize the Google Generative AI client
-		const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-		const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-		// Construct the prompt dynamically based on input
+		const { educationLevel, subject, questionCount, language } = await request.json();
+		
 		const educationLevelText = educationLevels[language][educationLevel];
-        
-		const prompt =
-			`Generate ${questionCount} unique trivia questions about ${subject} for a student at the ${educationLevelText} level with vary level of diffuculty. Each question should be a short-answer type with a maximum of 2 words for the answer and should have a single correct answer. Ensure that all questions are distinct from one another within this session and aim to avoid duplication from previous sessions. ${language === "indonesian"? "Ensure the questions adhere to the Indonesian curriculum.": ""}. Format the output as an array with no additional styling, e.g., [{question: 'example question', answer: 'example answer'}].To further ensure uniqueness, introduce a randomization element in the selection of questions and vary the types of questions to make sure they are tailored to the student's curriculum in ${language}.`.trim();
 
-		const response = await model.generateContent(prompt);
+		const timestamp = Date.now();
+		const randomSeed = Math.random().toString(36).substring(7);
+		const difficultyDistribution = ["easy", "medium", "hard"].join(",");
+		const questionTypes = [
+			"factual",
+			"conceptual",
+			"analytical",
+			"application",
+		].join(",");
+
+		const prompt = `
+		Generate ${questionCount} unique trivia questions about ${subject} for a ${educationLevelText} level with the following specifications:
+
+		1. Randomization Seed: ${randomSeed}
+		2. Timestamp: ${timestamp}
+		3. Question Types: Rotate through [${questionTypes}]
+		4. Difficulty Distribution: [${difficultyDistribution}] (40% hard, 35% medium, 25% easy)
+		5. Question Constraints: Ensure only generate short answered question, avoid explanation question like "explain why, how, jelaskan mengapa, bagaimana, etc"
+		6. Answer Constraints: Maximum 2 short words per answer
+		7. Language: ${
+			language === "indonesian"
+				? "Indonesian curriculum-aligned"
+				: "Standard international"
+		}
+
+		Requirements:
+		- Ensure questions are distinct within this session
+		- Vary question patterns for each generation
+		- Include subject-specific terminology
+		- Focus on core curriculum concepts
+		- Adapt difficulty based on education level
+
+		Format output as JSON array:
+		[{question: "question text", answer: "answer text"}]
+
+		Additional context:
+		- Subject area: ${subject}
+		- Education level: ${educationLevelText}
+		- Session ID: ${randomSeed}-${timestamp}
+		`.trim();
+
+		const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+		const model = genAI.getGenerativeModel({ 
+			model: "gemini-1.5-flash", 
+			generationConfig: {
+				temperature: 1.5,
+			},
+			systemInstruction: prompt });
+        
+
+		const response = await model.generateContent("");
 
 		const triviaQuestions = response.response.text()
             
