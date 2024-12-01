@@ -68,8 +68,24 @@ export default function TriviaPage({params}: {params: {id: string}}) {
 
       if (triviaItem) {
         if (typeof triviaItem.trivia === 'string') {
-          triviaItem.trivia = JSON.parse(triviaItem.trivia);
+          try {
+            const cleanedJson = triviaItem.trivia
+              .replace(/```json\n|\n```/g, '') 
+              .trim(); 
+
+            const parsedTrivia = JSON.parse(cleanedJson);
+            if (Array.isArray(parsedTrivia)) {
+              triviaItem.trivia = parsedTrivia;
+            } else {
+              console.error('Invalid trivia format');
+              triviaItem.trivia = [];
+            }
+          } catch (error) {
+            console.error('Error parsing trivia:', error);
+            triviaItem.trivia = [];
+          }
         }
+
         if (triviaItem.score !== undefined) {
           router.push(`/trivia/${triviaID}/result`);
           return;
@@ -89,7 +105,16 @@ export default function TriviaPage({params}: {params: {id: string}}) {
 
       if (triviaItem) {
         if (typeof triviaItem.trivia === 'string') {
-          triviaItem.trivia = JSON.parse(triviaItem.trivia);
+          try {
+            const cleanedJson = triviaItem.trivia
+              .replace(/```json\n|\n```/g, '')
+              .trim();
+            triviaItem.trivia = JSON.parse(cleanedJson);
+          } catch (error) {
+            console.error('Failed to parse trivia JSON:', error);
+            router.push("/");
+            return;
+          }
         }
         setTrivia(triviaItem);
         initializeUserAnswers(triviaItem);
